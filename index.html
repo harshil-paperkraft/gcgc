@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GC GC Pvt. Ltd. — the scrapbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@500;700&family=Special+Elite&family=Work+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#efe6d2; --paper2:#e6dbc2; --ink:#1b1a17; --soft:#5d564a;
+  --red:#d83a22; --blue:#2448c9; --tape:rgba(246,231,160,.78); --tape2:rgba(170,214,226,.75);
+  --out:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:"Work Sans",sans-serif;overflow-x:hidden;-webkit-tap-highlight-color:transparent;
+  background-image:radial-gradient(#0000 60%,#b9a98533),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.75' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .33 0 0 0 0 .2 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-attachment:fixed}
+img{display:block;max-width:100%}
+.hand{font-family:Caveat,cursive}
+.type{font-family:"Special Elite",monospace}
+.mark{font-family:"Archivo Black",sans-serif;text-transform:uppercase;letter-spacing:-.02em}
+.hl{background:linear-gradient(transparent 55%,#ffd84a 55%,#ffd84a 88%,transparent 88%);padding:0 3px}
+.tape{position:absolute;width:96px;height:28px;background:var(--tape);top:-13px;left:50%;translate:-50% 0;rotate:-4deg;z-index:3;
+  box-shadow:0 1px 2px #0002;clip-path:polygon(3% 0,97% 4%,100% 50%,96% 100%,2% 96%,0 50%)}
+.tape.b{background:var(--tape2);rotate:5deg}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:40;display:flex;justify-content:space-between;align-items:center;padding:10px 18px;
+  background:var(--paper);border-bottom:2px solid var(--ink)}
+.bar .logo{font-size:20px}
+.bar nav{display:flex;gap:16px;font-family:Caveat;font-size:22px;font-weight:700}
+.bar a{color:var(--ink);text-decoration:none}
+.bar a:hover{color:var(--red);text-decoration:underline wavy}
+@media(max-width:560px){.bar .logo{display:none}.bar{justify-content:center}}
+
+/* hero */
+.hero{position:relative;min-height:calc(100svh - 50px);padding:40px 18px;display:grid;place-items:center;overflow:hidden}
+.title{text-align:center;position:relative;z-index:2;pointer-events:none}
+.title .stamp{display:inline-block;font-size:clamp(76px,19vw,230px);line-height:.82;color:var(--ink);rotate:-3deg}
+.title .stamp span{color:var(--red)}
+.title .sub{font-size:clamp(14px,2vw,18px);margin-top:16px;background:var(--ink);color:var(--paper);display:inline-block;padding:6px 12px;rotate:1deg}
+.title .note{font-size:clamp(28px,4.4vw,44px);color:var(--blue);margin-top:14px;rotate:-2deg}
+.pola{position:absolute;background:#fbfaf6;padding:9px 9px 34px;box-shadow:0 10px 24px #0003,0 1px 2px #0003;width:clamp(120px,19vw,230px);
+  touch-action:none;cursor:grab;user-select:none;z-index:1;transition:box-shadow .2s}
+.pola:active{cursor:grabbing;box-shadow:0 26px 40px #0004;z-index:5}
+.pola img{width:100%;aspect-ratio:4/5;object-fit:cover;pointer-events:none}
+.pola figcaption{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-family:Caveat;font-size:20px}
+.drag-hint{position:absolute;bottom:18px;left:50%;translate:-50%;font-family:Caveat;font-size:20px;color:var(--soft)}
+
+section{max-width:1100px;margin:auto;padding:80px 18px}
+.h{font-size:clamp(40px,8vw,90px);line-height:.9}
+.h small{display:block;font-family:Caveat;text-transform:none;font-size:.38em;color:var(--red);letter-spacing:0;margin-bottom:6px;rotate:-2deg;width:max-content}
+.intro{max-width:560px;font-size:18px;line-height:1.55;margin-top:14px}
+
+/* crew */
+.crew{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:34px 22px;margin-top:46px}
+.c{position:relative;perspective:1200px;cursor:pointer;height:340px}
+.c-in{position:relative;height:100%;transition:transform .8s var(--out);transform-style:preserve-3d}
+.c.flip .c-in{transform:rotateY(180deg)}
+.c-f,.c-b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#fbfaf6;box-shadow:0 8px 18px #0002}
+.c-f{padding:10px 10px 0}
+.c-f img,.c-f .none{width:100%;height:250px;object-fit:cover}
+.c-f .none{display:grid;place-items:center;background:var(--paper2);font-family:Caveat;font-size:24px;color:var(--soft);text-align:center;padding:20px}
+.c-f .nm{font-family:Caveat;font-size:28px;font-weight:700;text-align:center;margin-top:4px;line-height:1}
+.c-f .rl{font-size:12px;text-align:center;color:var(--soft)}
+.c-b{transform:rotateY(180deg);padding:22px 18px;background:#fbfaf6 repeating-linear-gradient(transparent 0 27px,#9ab3d566 27px 28px);background-position:0 12px}
+.c-b p{font-family:Caveat;font-size:21px;line-height:28px}
+.c-b b{font-family:Caveat;color:var(--red);font-size:24px}
+.sticker{position:absolute;top:-10px;right:-10px;z-index:4;background:var(--red);color:#fff;font-family:"Archivo Black";font-size:11px;padding:7px 10px;rotate:9deg;border-radius:3px;text-transform:uppercase}
+.sticker.blue{background:var(--blue)}
+.c:nth-child(odd) .c-in{rotate:-1.6deg}.c:nth-child(even) .c-in{rotate:1.4deg}
+.flip-hint{font-family:Caveat;font-size:22px;color:var(--soft);margin-top:24px}
+
+/* timeline */
+.tl{position:relative;margin-top:50px}
+.tl svg.path{position:absolute;left:50%;top:0;translate:-50% 0;height:100%;width:40px;overflow:visible}
+.year{position:relative;z-index:2;width:max-content;margin:60px auto 30px;font-size:clamp(34px,6vw,54px);background:var(--ink);color:var(--paper);padding:2px 16px;rotate:-2deg}
+.e{position:relative;width:50%;padding:0 40px 50px;opacity:0;transition:opacity .9s var(--out),transform .9s var(--out)}
+.e.L{transform:translate(-30px,20px) rotate(-4deg)}
+.e.R{left:50%;transform:translate(30px,20px) rotate(4deg)}
+.e.in{opacity:1;transform:none}
+.pin{position:absolute;top:26px;width:18px;height:18px;border-radius:50%;background:var(--red);box-shadow:inset -3px -3px 0 #0003,0 2px 3px #0004;z-index:3}
+.e.L .pin{right:-9px}.e.R .pin{left:-9px}
+.note-card{position:relative;background:#fbfaf6;padding:22px 20px 20px;box-shadow:0 8px 20px #0002;cursor:pointer;transition:transform .35s var(--out)}
+.e.L .note-card{rotate:-1deg}.e.R .note-card{rotate:1deg}
+.note-card:hover{transform:translateY(-5px) rotate(-1deg)}
+.note-card .d{font-family:"Special Elite";font-size:13px;color:var(--red)}
+.note-card h3{font-family:"Archivo Black";text-transform:uppercase;font-size:22px;line-height:1.05;margin:6px 0 8px}
+.note-card p{font-size:15.5px;line-height:1.55}
+.note-card .ppl{font-family:Caveat;font-size:20px;color:var(--blue);margin-top:10px}
+.note-card .pics{display:flex;margin-top:14px}
+.note-card .pics img{width:78px;height:78px;object-fit:cover;border:4px solid #fff;box-shadow:0 3px 8px #0003;margin-right:-14px}
+.note-card .pics img:nth-child(1){rotate:-6deg}.note-card .pics img:nth-child(2){rotate:5deg}.note-card .pics img:nth-child(3){rotate:-2deg}
+.note-card.big{background:#fff7d6}
+.note-card .read{font-family:Caveat;font-size:19px;margin-top:10px;text-decoration:underline}
+.soon{font-family:Caveat;font-size:26px;text-align:center;color:var(--soft);padding:20px 0 0}
+@media(max-width:760px){
+  .tl svg.path{left:14px;translate:0}
+  .e,.e.R{width:100%;left:0;padding:0 0 36px 44px}
+  .e.L .pin,.e.R .pin{left:18px;right:auto}
+  .year{margin-left:0}
+}
+
+/* corkboard */
+.board{position:relative;margin-top:40px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.board figure{background:#fbfaf6;padding:8px 8px 26px;box-shadow:0 6px 16px #0003;width:clamp(140px,22vw,220px);cursor:zoom-in;transition:transform .4s var(--out)}
+.board figure:hover{transform:scale(1.07) rotate(0deg)!important;z-index:2;position:relative}
+.board img{width:100%;aspect-ratio:1;object-fit:cover}
+
+/* lafda clipping */
+.clip{background:#f6f1e3;max-width:760px;margin:40px auto 0;padding:clamp(20px,5vw,44px);rotate:-1deg;box-shadow:0 12px 30px #0003;position:relative;
+  clip-path:polygon(0 2%,4% 0,9% 1.5%,15% 0,22% 1%,30% 0,40% 1.2%,52% 0,63% 1.4%,75% 0,86% 1%,94% 0,100% 1.5%,99% 30%,100% 60%,99% 98%,90% 100%,78% 98.6%,64% 100%,50% 98.8%,36% 100%,22% 98.5%,10% 100%,0 98%,1% 60%,0 30%)}
+.clip .mast{border-bottom:3px double var(--ink);padding-bottom:10px;display:flex;justify-content:space-between;font-family:"Special Elite";font-size:13px}
+.clip h3{font-family:"Archivo Black";font-size:clamp(30px,6vw,54px);line-height:.95;margin:14px 0 6px;text-transform:uppercase}
+.clip .cols{columns:2 240px;gap:28px;margin-top:16px;font-family:"Special Elite";font-size:15px;line-height:1.6}
+.clip .cols p{margin-bottom:12px}
+.clip .cols b{background:var(--ink);color:#f6f1e3;padding:0 4px}
+.verdict{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+.btn{font-family:"Archivo Black";text-transform:uppercase;font-size:14px;border:2.5px solid var(--ink);background:#fff;padding:11px 16px;cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.red{background:var(--red);color:#fff}
+.tally{font-family:Caveat;font-size:24px;margin-top:12px;min-height:30px}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:100;background:#1b1a17d9;display:none;place-items:center;padding:16px}
+.modal.open{display:grid}
+.mbox{position:relative;background:#fbfaf6;max-width:620px;width:100%;max-height:88svh;overflow:auto;padding:26px;box-shadow:0 30px 60px #0008;animation:in .5s var(--out)}
+@keyframes in{from{opacity:0;transform:translateY(40px) rotate(-3deg)}}
+.mbox .gal{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:-6px -6px 16px;padding:6px}
+.mbox .gal img{height:280px;flex:0 0 auto;max-width:85%;object-fit:cover;scroll-snap-align:start;border:6px solid #fff;box-shadow:0 4px 10px #0003}
+.mbox .d{font-family:"Special Elite";color:var(--red)}
+.mbox h3{font-family:"Archivo Black";text-transform:uppercase;font-size:30px;line-height:1;margin:6px 0 12px}
+.mbox p{line-height:1.65;margin-bottom:10px}
+.mbox .ppl{font-family:Caveat;font-size:22px;color:var(--blue)}
+.mbox.photo{padding:10px 10px 40px;max-width:min(90vw,700px)}
+.mbox.photo img{max-height:78svh;margin:auto}
+.close{position:fixed;top:14px;right:14px;z-index:101;width:48px;height:48px;border:2.5px solid var(--paper);background:var(--ink);color:var(--paper);font-size:22px;cursor:pointer}
+
+footer{border-top:2px solid var(--ink);padding:50px 18px 60px;text-align:center}
+footer .mark{font-size:clamp(40px,12vw,130px);line-height:.9;cursor:pointer;user-select:none}
+footer p{font-family:"Special Elite";font-size:13px;margin-top:12px;color:var(--soft)}
+.toast{position:fixed;left:50%;bottom:20px;translate:-50% 0;z-index:120;background:var(--ink);color:var(--paper);font-family:Caveat;font-size:24px;padding:8px 18px;transform:translateY(140%);transition:transform .4s var(--out)}
+.toast.show{transform:none}
+.doodle{position:fixed;pointer-events:none;z-index:110;font-family:Caveat;font-weight:700;font-size:26px;color:var(--red)}
+/* ---------- extra fun ---------- */
+#crew{background:#ffd84a;max-width:none;padding-inline:max(18px,calc((100vw - 1100px)/2));rotate:-1deg;margin:30px -10px;box-shadow:0 10px 0 var(--ink)}
+#crew>*{rotate:1deg}
+#pics{background:#c79b62 radial-gradient(#0000002a 1px,transparent 1.5px) 0 0/7px 7px;max-width:none;padding-inline:max(18px,calc((100vw - 1100px)/2));border-block:10px solid #6b4a2b}
+#pics .h{color:#fff;text-shadow:4px 4px 0 var(--ink)}
+.caution{overflow:hidden;white-space:nowrap;background:repeating-linear-gradient(-45deg,#ffd84a 0 22px,var(--ink) 22px 44px);height:26px;margin:0 -20px;rotate:2deg}
+.c:hover .c-in{animation:wig .5s}
+.note-card:hover{animation:wig .5s}
+@keyframes wig{25%{transform:rotate(-3deg)}50%{transform:rotate(2.5deg)}75%{transform:rotate(-1deg)}}
+.c.flip:hover .c-in{animation:none}
+.h.mark{position:relative;width:max-content;max-width:100%}
+.h.mark::after{content:"";position:absolute;left:-2%;bottom:-6px;height:12px;width:104%;transform:scaleX(0);transform-origin:left;background:var(--red);border-radius:50% 40% 60% 30%;transition:transform 1s var(--out) .2s;z-index:-1;opacity:.85}
+.h.mark.in::after{transform:scaleX(1)}
+.stk{position:absolute;font-size:clamp(38px,6vw,64px);cursor:grab;touch-action:none;user-select:none;z-index:30;filter:drop-shadow(0 0 0 #fff) drop-shadow(3px 3px 0 #fff) drop-shadow(-3px -3px 0 #fff) drop-shadow(3px -3px 0 #fff) drop-shadow(-3px 3px 0 #fff) drop-shadow(0 6px 6px #0004);animation:float 4s ease-in-out infinite}
+.stk:active{cursor:grabbing;animation:none;scale:1.2}
+@keyframes float{50%{translate:0 -8px}}
+.wed{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.wed i{position:absolute;top:-20px;font-style:normal;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.title .stamp{animation:stamp .7s var(--out) both}
+@keyframes stamp{from{transform:scale(2.4) rotate(8deg);opacity:0}}
+.title .sub{animation:slidein .6s var(--out) .4s both}.title .note{animation:slidein .6s var(--out) .6s both}
+@keyframes slidein{from{opacity:0;transform:translateY(20px)}}
+.speech{position:absolute;bottom:100%;left:50%;translate:-50% -8px;background:#fff;border:2.5px solid var(--ink);font-family:Caveat;font-size:20px;padding:4px 10px;white-space:nowrap;z-index:6;border-radius:14px;pointer-events:none;animation:in .3s var(--out)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.e{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="logo mark">GC GC Pvt. Ltd.</div>
+  <nav><a href="#crew">the crew</a><a href="#story">our story</a><a href="#pics">pics</a><a href="#lafda">lafda</a></nav>
+</div>
+
+<header class="hero" id="hero">
+  <div class="title">
+    <div class="stamp mark">GC<span>GC</span></div><br>
+    <div class="sub type">not just a chat centre. a trauma centre.</div>
+    <div class="note hand">questionable decisions since 2020</div>
+  </div>
+  <div class="drag-hint">(drag the photos around, go on)</div>
+</header>
+
+<section id="crew">
+  <h2 class="h mark"><small>the board of directors</small>The Crew</h2>
+  <p class="intro">Debates on who's more fake. 3 AM <span class="hl">dukh-dard sessions</span>. Chaos turned into comedy. We have the drama and the cure.<br><br>Now running two branches: <b>🩺 Trauma Centre</b> (boys only, the original) and <b>💅 Girlypops</b> (everyone + the girls, est. Aug 2026).</p>
+  <div class="crew" id="crewGrid"></div>
+  <p class="flip-hint">↑ tap someone to read their file</p>
+</section>
+
+<section id="story">
+  <h2 class="h mark"><small>from a meme page to a wedding</small>Our Story</h2>
+  <p class="intro">Every chapter, pinned in order. Tap a note for the full story.</p>
+  <div class="tl" id="tl">
+    <svg class="path" preserveAspectRatio="none" viewBox="0 0 40 1000"><path id="pathLine" d="M20 0 C 36 80, 4 160, 20 240 S 36 400, 20 480 S 4 640, 20 720 S 36 880, 20 1000" fill="none" stroke="#1b1a17" stroke-width="2.5" stroke-dasharray="7 9" vector-effect="non-scaling-stroke"/></svg>
+  </div>
+  <p class="soon">to be continued… (send the next story)</p>
+</section>
+
+<section id="pics">
+  <h2 class="h mark"><small>the evidence locker</small>Pics or it didn't happen</h2>
+  <div class="board" id="board"></div>
+</section>
+
+<div class="caution"></div>
+<section id="lafda">
+  <h2 class="h mark"><small>⚠ classified</small>The Lafda</h2>
+  <article class="clip">
+    <div class="mast"><span>THE GC GC TIMES</span><span>APRIL 2025 · ₹0.00</span></div>
+    <h3>Marathi vs Kid: GC torn apart over a password</h3>
+    <p class="type" style="font-size:14px;color:var(--soft)">Admin watched with popcorn, sources confirm</p>
+    <div class="cols">
+      <p><b>THE REASON.</b> Kid changed the GC password and did not share it with Marathi. Marathi took it personally. The group turned toxic.</p>
+      <p><b>WHAT HAPPENED.</b> The admin tried to calm things down. Marathi rage-quit the GC.</p>
+      <p><b>AFTERMATH.</b> Marathi then removed everyone from Instagram. Full unfollow combo.</p>
+      <p><b>ADMIN RESPONSIBLE.</b> Mochi. Was supposed to stop the fight, had a personal grudge, chose to watch. Outrage followed. Impeachment was demanded.</p>
+      <p><b>THE REAL LOSS.</b> A friend, to ego and bad admin decisions. 💀</p>
+    </div>
+    <div class="verdict">
+      <button class="btn red" data-v="Mochi">Impeach Mochi</button>
+      <button class="btn" data-v="Kid">Blame the Kid</button>
+      <button class="btn" data-v="Marathi">Marathi overreacted</button>
+    </div>
+    <div class="tally hand" id="tally"></div>
+  </article>
+</section>
+
+<footer>
+  <div class="mark" id="foot">GCGCGCGC</div>
+  <p>© GC GC Pvt. Ltd. · admin@gcgc.dom (still not working)</p>
+</footer>
+
+<div class="modal" id="modal"><button class="close" aria-label="close">✕</button><div class="mbox" id="mbox"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   ✏️  EDIT ZONE — everything on the site comes from these lists.
+   Photos: any URL, or drop files in ./img/ and write "img/name.jpg"
+   ===================================================================== */
+const W = id => `https://static.wixstatic.com/media/${id}`;
+
+const CREW = [
+  {nick:"Mochi", name:"Abhishek Sagar", tag:"most toxic", img:W("cd9f6a_ecd79f07250445399ae53a5c5f230499~mv2.jpeg"),
+   bio:"The most toxic person you'll ever meet. Master of being stuck in the talking stage, professional overthinker, full-time nasedi with hizru boy vibes. Can't move on, but moves every conversation to chaos."},
+  {nick:"Set King", name:"Adnan Khan", tag:"married 💍", tagc:"blue", img:W("cd9f6a_09491eeefa614da58ba417926f9c3567~mv2.jpg"),
+   bio:"Undisputed champion of naseeb and setting. Pays zero tax, cash stacked like a secret Dubai sheikh, 15 trips a year without breaking a sweat. Married Hira in May 2026."},
+  {nick:"Gujju", name:"Harshil Patel", img:W("cd9f6a_af793bce9fdc4c78a5cb55f283c10b43~mv2.jpeg"), tag:"admin",
+   bio:"Best admin and planner this GC could ask for. If something works out, it's because of him. The Natak King, delivers Oscar-worthy drama at midnight. Only one with a driving license."},
+  {nick:"The Kid", name:"Nasir Ansari", tag:"evil-eye expert", tagc:"blue", img:W("cd9f6a_c342f9711a6542978d0109f05cc85d72~mv2.jpg"),
+   bio:"A man's body, a child's brain. Can't survive two days without daru, all-rounder in nasha bazi, king of terrible planning. Switched civil → CS, still figuring out why. Certified evil-eye expert."},
+  {nick:"Hira", name:"Adnan's wife", img:"", tag:"new", tagc:"blue",
+   bio:"Intro coming soon… thode dino me daalte hai ⏳"},
+  {nick:"Zohra", name:"Nasir's girlfriend", img:"", tag:"new", tagc:"blue",
+   bio:"Intro coming soon… thode dino me daalte hai ⏳"},
+  {nick:"Marathi", name:"Shubhankar", img:"", tag:"ex-member",
+   bio:"Took the GC international (UK edition). Oldest member, still single. Rage-quit in April 2025 over a password. See: The Lafda."},
+];
+
+/* Timeline — keep in date order. big:true = highlighted note. link:"#id" jumps instead of opening */
+const STORY = [
+  {y:2020, d:"2020", t:"The Corona Connection",
+   p:"Met on a meme page during lockdown. Moved to a Discord server, then made an Instagram GC by the end of 2020. Lots of crypto talk. Nobody got rich."},
+  {y:2021, d:"2021", t:"The WhatsApp Era Begins",
+   p:"Adnan got a job at sea with terrible internet, so the whole GC moved from Instagram to WhatsApp. Numbers were exchanged. It got real."},
+  {y:2022, d:"Mid 2022", t:"Enter: Mochi", who:"Mochi, Marathi",
+   p:"Someone got kicked out, Abhishek Sagar (Mochi) came in. Shubhankar and Mochi did the first ever GC meetup."},
+  {y:2023, d:"2023", t:"First Official GC Trip", who:"Adnan, Harshil",
+   p:"Adnan and Harshil did an 8-day trek. The first trip under the GC banner."},
+  {y:2024, d:"2024", t:"Jaipur: four in one place", who:"Nasir, Adnan, Abhishek, Harshil",
+   p:"First time four of us were actually in the same city at the same time.", imgs:[W("cd9f6a_3e13a9d08bb945149bb41c3759258642~mv2.jpg")]},
+  {y:2024, d:"May 2024", t:"Shoja, Himachal",
+   p:"A Himachal getaway in May.", imgs:[W("cd9f6a_a9016d0f396d44f79539887b155e89a8~mv2.jpg")]},
+  {y:2024, d:"26 Dec 2024 → 2 Jan 2025", t:"Naggar New Year",
+   p:"Closed the year in the mountains with BNK and others. New Year in Naggar.",
+   imgs:[W("cd9f6a_4c1c9412c5de425cbf1d2e2f30633a0b~mv2.jpg"),W("cd9f6a_7fb1787c36da401dbf48a729814883e7~mv2.jpg"),W("cd9f6a_90a5cc5d68e84964ae0e275b73bdd297~mv2.jpg")]},
+  {y:2025, d:"April 2025", t:"The Lafda", who:"Marathi, Kid, Mochi", link:"#lafda",
+   p:"Marathi vs Kid over a password. Marathi rage-quit and unfollowed everyone. Mochi watched."},
+  {y:2025, d:"August 2025", t:"We meet Hira", who:"the GC + Hira",
+   p:"First time meeting Hira, Adnan's girlfriend at the time."},
+  {y:2026, d:"May 2026", t:"Hira & Adnan get married 💍", who:"everyone", big:true,
+   p:"The Set King finally sets it. Hira and Adnan are married."},
+  {y:2026, d:"End of June 2026", t:"The boys + Hira trip", who:"all the boys + Hira",
+   p:"The whole gang on one trip, and Hira's first proper GC trip."},
+  {y:2026, d:"August 2026", t:"The GC splits into two 💅", who:"everyone except Marathi",
+   p:"The original Trauma Centre stays boys-only. But a new GC is born: Girlypops, for all of us plus the girls. Everyone's in it except Marathi."},
+  {y:2026, d:"September 2026", t:"We meet Zohra", who:"the GC + Zohra",
+   p:"First time meeting Zohra, Nasir's girlfriend."},
+  // 👇 NEXT STORY GOES HERE
+];
+
+const PICS = ["cd9f6a_497c525cb55843a68a461cc3a27da9eb~mv2.jpg","cd9f6a_da751d307eec49eb8c086d4568bc5e1df003.jpg",
+  "cd9f6a_e10503b107a74dd9b77b730abba8effdf003.jpg","cd9f6a_a34ba008c1f54c4a9599d7a6ef220fce~mv2.jpg",
+  "cd9f6a_6bbde576548b4ae6be1dc6a456cb5fa6~mv2.jpg","cd9f6a_1d755a13d12147ba8c6c1238ec3bc703~mv2.jpg",
+  "cd9f6a_f05f6dc9156346f5b9bc56706b72ea07~mv2.jpg","cd9f6a_9c5668267d5e47fabb2fae6b1e8417d1~mv2.jpg",
+  "cd9f6a_3f548a24bbe64430b374cfe0e545ecf1~mv2.jpg","cd9f6a_fc9be7f0e60948b88c35f70252609e32f003.jpg",
+  "cd9f6a_6b4f3e31dfea4997a058475f9452fe79~mv2.jpeg","cd9f6a_4c1c9412c5de425cbf1d2e2f30633a0b~mv2.jpg"].map(W);
+
+const HERO = [
+  {src:W("cd9f6a_3e13a9d08bb945149bb41c3759258642~mv2.jpg"), cap:"jaipur '24", x:6, y:10, r:-9},
+  {src:W("cd9f6a_7fb1787c36da401dbf48a729814883e7~mv2.jpg"), cap:"naggar ❄", x:72, y:8, r:7},
+  {src:W("cd9f6a_497c525cb55843a68a461cc3a27da9eb~mv2.jpg"), cap:"the boys", x:10, y:58, r:5},
+  {src:W("cd9f6a_a9016d0f396d44f79539887b155e89a8~mv2.jpg"), cap:"shoja", x:70, y:56, r:-6},
+];
+/* =========================== end edit zone =========================== */
+
+const $ = s => document.querySelector(s);
+const rnd = (a,b) => a + Math.random()*(b-a);
+
+/* hero: draggable polaroids */
+HERO.forEach(h=>{
+  const f=document.createElement("figure");f.className="pola";
+  f.style.left=h.x+"%";f.style.top=h.y+"%";f.style.rotate=h.r+"deg";
+  f.innerHTML=`<span class="tape ${Math.random()>.5?"b":""}"></span><img src="${h.src}" alt=""><figcaption>${h.cap}</figcaption>`;
+  $("#hero").appendChild(f);
+  let sx,sy,ox,oy,z=10;
+  f.addEventListener("pointerdown",e=>{f.setPointerCapture(e.pointerId);sx=e.clientX;sy=e.clientY;ox=f.offsetLeft;oy=f.offsetTop;f.style.zIndex=++window.Z||(window.Z=20)});
+  f.addEventListener("pointermove",e=>{if(!f.hasPointerCapture(e.pointerId))return;
+    f.style.left=ox+e.clientX-sx+"px";f.style.top=oy+e.clientY-sy+"px";f.style.rotate=Math.max(-14,Math.min(14,(e.clientX-sx)/12))+"deg"});
+  f.addEventListener("pointerup",()=>f.style.rotate=rnd(-8,8)+"deg");
+});
+if(innerWidth<640) document.querySelectorAll(".pola").forEach((p,i)=>{p.style.top=[3,4,70,72][i]+"%";p.style.left=[-4,62,-2,64][i]+"%"});
+
+/* crew */
+$("#crewGrid").innerHTML = CREW.map(c=>`
+  <div class="c" tabindex="0">
+    ${c.tag?`<span class="sticker ${c.tagc||""}">${c.tag}</span>`:""}
+    <div class="c-in">
+      <div class="c-f"><span class="tape"></span>
+        ${c.img?`<img src="${c.img}" alt="${c.name}" loading="lazy">`:`<div class="none">photo pending<br>(send one 📸)</div>`}
+        <div class="nm">${c.nick}</div><div class="rl">${c.name}</div></div>
+      <div class="c-b"><b>${c.nick}</b><p>${c.bio}</p></div>
+    </div></div>`).join("");
+document.querySelectorAll(".c").forEach(c=>{c.onclick=()=>c.classList.toggle("flip");c.onkeydown=e=>e.key==="Enter"&&c.click()});
+
+/* timeline */
+const tl=$("#tl"); let lastY, side=0;
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.2,rootMargin:"0px 0px -8% 0px"});
+STORY.forEach((s,i)=>{
+  if(s.y!==lastY){lastY=s.y;const y=document.createElement("div");y.className="year mark";y.textContent=s.y;tl.appendChild(y)}
+  const e=document.createElement("div");e.className="e "+(side++%2?"R":"L");
+  e.innerHTML=`<span class="pin"></span><div class="note-card ${s.big?"big":""}" data-i="${i}"><span class="tape ${i%2?"b":""}"></span>
+    <div class="d">${s.d}</div><h3>${s.t}</h3><p>${s.p}</p>
+    ${s.who?`<div class="ppl">— ${s.who}</div>`:""}
+    ${s.imgs?`<div class="pics">${s.imgs.slice(0,3).map(u=>`<img src="${u}" alt="" loading="lazy">`).join("")}</div>`:""}
+    ${s.link?`<div class="read">read the case file →</div>`:""}</div>`;
+  tl.appendChild(e);io.observe(e);
+});
+tl.onclick=e=>{const c=e.target.closest(".note-card");if(!c)return;const s=STORY[c.dataset.i];
+  if(s.link){location.hash=s.link;return}
+  openM(`${s.imgs?`<div class="gal">${s.imgs.map(u=>`<img src="${u}" alt="">`).join("")}</div>`:""}
+    <div class="d">${s.d}</div><h3>${s.t}</h3><p>${s.p}</p>${s.who?`<div class="ppl">— ${s.who}</div>`:""}`)};
+
+/* draw the dashed path as you scroll */
+const path=$("#pathLine"),len=path.getTotalLength();
+path.style.strokeDasharray=`${len}`;path.style.strokeDashoffset=len;
+const drawPath=()=>{const r=tl.getBoundingClientRect();const k=Math.min(1,Math.max(0,(innerHeight*.7-r.top)/r.height));path.style.strokeDashoffset=len*(1-k)};
+addEventListener("scroll",drawPath,{passive:true});drawPath();
+
+/* corkboard */
+$("#board").innerHTML=PICS.map(u=>`<figure style="rotate:${rnd(-6,6).toFixed(1)}deg;margin-top:${rnd(0,24)|0}px"><img src="${u}" alt="" loading="lazy"></figure>`).join("");
+$("#board").onclick=e=>{if(e.target.tagName==="IMG")openM(`<img src="${e.target.src}" alt="">`,"photo")};
+
+/* modal */
+function openM(html,cls=""){const b=$("#mbox");b.className="mbox "+cls;b.innerHTML=html;$("#modal").classList.add("open");document.body.style.overflow="hidden"}
+function closeM(){$("#modal").classList.remove("open");document.body.style.overflow=""}
+$("#modal").onclick=e=>{if(e.target.id==="modal"||e.target.closest(".close"))closeM()};
+addEventListener("keydown",e=>e.key==="Escape"&&closeM());
+
+/* lafda vote */
+const votes={Mochi:0,Kid:0,Marathi:0};
+document.querySelectorAll("[data-v]").forEach(b=>b.onclick=e=>{votes[b.dataset.v]++;scribble(e,["guilty!","💀","🍿","objection!"]);
+  $("#tally").textContent=`Mochi ${votes.Mochi} · Kid ${votes.Kid} · Marathi ${votes.Marathi}  — ${votes.Mochi>=5?"Mochi is impeached. Hand over the admin.":"court is in session"}`});
+
+/* little handwritten pops */
+function scribble(e,words){const d=document.createElement("div");d.className="doodle";d.textContent=words[Math.random()*words.length|0];
+  d.style.left=e.clientX-20+"px";d.style.top=e.clientY-30+"px";document.body.appendChild(d);
+  d.animate([{opacity:0,transform:"translateY(10px) rotate(-10deg) scale(.6)"},{opacity:1,transform:"translateY(-20px) rotate(-4deg) scale(1)",offset:.3},{opacity:0,transform:"translateY(-70px) rotate(6deg)"}],{duration:1200,easing:"ease-out"}).onfinish=()=>d.remove()}
+function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(el.t);el.t=setTimeout(()=>el.classList.remove("show"),2600)}
+/* draggable stickers all over the page */
+const STK=[["🍺",8,"#crew",92],["🏔️",88,"#story",2],["🚗",3,"#story",40],["💀",90,"#lafda",6],["🩴",94,"#crew",4],["💍",4,"#story",75],["🫡",86,"#pics",3],["🍿",2,"#lafda",60]];
+STK.forEach(([e,x,sec,y])=>{const s=document.createElement("div");s.className="stk";s.textContent=e;
+  const host=$(sec);host.style.position="relative";s.style.left=x+"%";s.style.top=y+"%";s.style.rotate=rnd(-20,20)+"deg";s.style.animationDelay=rnd(0,3)+"s";host.appendChild(s);
+  let sx,sy,ox,oy,moved;
+  s.addEventListener("pointerdown",ev=>{s.setPointerCapture(ev.pointerId);sx=ev.clientX;sy=ev.clientY;ox=s.offsetLeft;oy=s.offsetTop;moved=0});
+  s.addEventListener("pointermove",ev=>{if(!s.hasPointerCapture(ev.pointerId))return;moved=1;s.style.left=ox+ev.clientX-sx+"px";s.style.top=oy+ev.clientY-sy+"px"});
+  s.addEventListener("pointerup",ev=>{if(!moved)scribble(ev,["oye!","hehe","GC!","bas"])});
+});
+
+/* headings get a marker swoosh when they scroll in */
+document.querySelectorAll(".h.mark").forEach(h=>io.observe(h));
+
+/* crew say something when tapped */
+const LINES={"Mochi":"main toxic nahi hu","Set King":"naseeb hai bhai","Gujju":"plan ready hai","The Kid":"daru kab?","Hira":"coming soon 👀","Zohra":"coming soon 👀","Marathi":"password kya hai??"};
+document.querySelectorAll(".c").forEach((c,i)=>c.addEventListener("click",()=>{c.querySelector(".speech")?.remove();
+  const b=document.createElement("div");b.className="speech";b.textContent=LINES[CREW[i].nick]||"GC!";c.appendChild(b);setTimeout(()=>b.remove(),1800)}));
+
+/* wedding card rains hearts + rings */
+tl.addEventListener("click",e=>{const c=e.target.closest(".note-card.big");if(!c)return;
+  const w=document.createElement("div");w.className="wed";w.style.position="fixed";w.style.zIndex=150;document.body.appendChild(w);
+  for(let k=0;k<40;k++){const i=document.createElement("i");i.textContent=["💍","❤️","🎉","💐"][k%4];i.style.left=rnd(0,100)+"vw";i.style.fontSize=rnd(18,40)+"px";i.style.animationDuration=rnd(2,4)+"s";i.style.animationDelay=rnd(0,.8)+"s";w.appendChild(i)}
+  setTimeout(()=>w.remove(),5000)},true);
+
+let n=0;$("#foot").onclick=e=>{n++;scribble(e,["GC!","GC GC!","bas karo","😭"]);if(n===7)toast("you found the trauma centre. welcome 🫡")};
+</script>
+</body>
+</html>
