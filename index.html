@@ -169,6 +169,16 @@ footer p{font-family:"Special Elite";font-size:13px;margin-top:12px;color:var(--
 .title .sub{animation:slidein .6s var(--out) .4s both}.title .note{animation:slidein .6s var(--out) .6s both}
 @keyframes slidein{from{opacity:0;transform:translateY(20px)}}
 .speech{position:absolute;bottom:100%;left:50%;translate:-50% -8px;background:#fff;border:2.5px solid var(--ink);font-family:Caveat;font-size:20px;padding:4px 10px;white-space:nowrap;z-index:6;border-radius:14px;pointer-events:none;animation:in .3s var(--out)}
+.branch{display:flex;align-items:center;gap:6px;margin-top:26px;flex-wrap:nowrap}
+.branch svg{width:clamp(70px,14vw,130px);flex:none;fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-dasharray:200;stroke-dashoffset:200;transition:stroke-dashoffset 1.2s var(--out) .2s}
+.branch.in svg{stroke-dashoffset:0}
+.gcb-col{display:flex;flex-direction:column;gap:22px}
+.gcb{font-family:"Archivo Black";text-transform:uppercase;font-size:clamp(12px,2.4vw,17px);background:#fff;border:2.5px solid var(--ink);padding:8px 12px;box-shadow:4px 4px 0 var(--ink);white-space:nowrap;rotate:-1.5deg;cursor:pointer;transition:transform .2s}
+.gcb:hover{transform:translate(-2px,-2px) rotate(2deg)}
+.gcb.pink{background:#ff9ecf;rotate:2deg}
+.gcb-col .gcb{opacity:0;transform:translateX(-14px);transition:opacity .5s var(--out),transform .5s var(--out)}
+.branch.in .gcb-col .gcb{opacity:1;transform:none;transition-delay:1s}
+.branch.in .gcb-col .gcb.pink{transition-delay:1.25s}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.e{opacity:1;transform:none}}
 </style>
 </head>
@@ -190,7 +200,12 @@ footer p{font-family:"Special Elite";font-size:13px;margin-top:12px;color:var(--
 
 <section id="crew">
   <h2 class="h mark"><small>the board of directors</small>The Crew</h2>
-  <p class="intro">Debates on who's more fake. 3 AM <span class="hl">dukh-dard sessions</span>. Chaos turned into comedy. We have the drama and the cure.<br><br>Now running two branches: <b>🩺 Trauma Centre</b> (boys only, the original) and <b>💅 Girlypops</b> (everyone + the girls, est. Aug 2026).</p>
+  <p class="intro">Debates on who's more fake. 3 AM <span class="hl">dukh-dard sessions</span>. Chaos turned into comedy. We have the drama and the cure.</p>
+  <div class="branch">
+    <span class="gcb">🩺 Trauma Centre</span>
+    <svg viewBox="0 0 120 60" aria-hidden="true"><path d="M2 30 H40 C60 30 60 8 80 8 H112" /><path d="M40 30 C60 30 60 52 80 52 H112" stroke-dasharray="0"/><path d="M104 2 L114 8 L104 14 M104 46 L114 52 L104 58"/></svg>
+    <div class="gcb-col"><span class="gcb">🩺 Trauma Centre</span><span class="gcb pink">💅 Girlypops</span></div>
+  </div>
   <div class="crew" id="crewGrid"></div>
   <p class="flip-hint">↑ tap someone to read their file</p>
 </section>
@@ -289,8 +304,8 @@ const STORY = [
    p:"The Set King finally sets it. Hira and Adnan are married."},
   {y:2026, d:"End of June 2026", t:"The boys + Hira trip", who:"all the boys + Hira",
    p:"The whole gang on one trip, and Hira's first proper GC trip."},
-  {y:2026, d:"August 2026", t:"The GC splits into two 💅", who:"everyone except Marathi",
-   p:"The original Trauma Centre stays boys-only. But a new GC is born: Girlypops, for all of us plus the girls. Everyone's in it except Marathi."},
+  {y:2026, d:"August 2026", t:"The GC branches out 💅",
+   p:"Trauma Centre → Girlypops. A new branch is born."},
   {y:2026, d:"September 2026", t:"We meet Zohra", who:"the GC + Zohra",
    p:"First time meeting Zohra, Nasir's girlfriend."},
   // 👇 NEXT STORY GOES HERE
@@ -395,7 +410,7 @@ STK.forEach(([e,x,sec,y])=>{const s=document.createElement("div");s.className="s
 });
 
 /* headings get a marker swoosh when they scroll in */
-document.querySelectorAll(".h.mark").forEach(h=>io.observe(h));
+document.querySelectorAll(".h.mark,.branch").forEach(h=>io.observe(h));
 
 /* crew say something when tapped */
 const LINES={"Mochi":"main toxic nahi hu","Set King":"naseeb hai bhai","Gujju":"plan ready hai","The Kid":"daru kab?","Hira":"coming soon 👀","Zohra":"coming soon 👀","Marathi":"password kya hai??"};
